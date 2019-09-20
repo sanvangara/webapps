@@ -1,0 +1,28 @@
+---
+- name: Automation Dump
+  hosts: 'FMW_HOSTS'
+  gather_facts: false 
+
+  tasks:
+
+  - name: Ansible Copy fmw pmp automation files from a directory to remote server
+    copy:
+      src: /home/rtatinen/fmw.zip
+      dest: /tmp
+
+  - name: Copying Files from tmp to /usr/local/MAS
+    shell:
+          cmd: |
+            chmod 755 /tmp/fmw.zip
+            users_list=$(ps axho uid | sort -u | xargs getent passwd | cut -f1 -d: | wc -L)
+            log_id=`ps -eo user:${users_list},cmd | grep -v 'grep' | grep -E 'Dweblogic|httpd' | awk '{print $1}' | sort -u | head -1`
+            pbrun cit-dba -u $log_id << EOF
+            cd /usr/local/MAS
+            if [[ -d /usr/local/MAS/fmw ]]; then
+            rm -rf /usr/local/MAS/fmw /usr/local/MAS/fmw_bak
+            fi
+            unzip /tmp/fmw.zip
+            chmod 755 -R fmw
+            EOF
+            rm -rf /tmp/fmw.zip
+    

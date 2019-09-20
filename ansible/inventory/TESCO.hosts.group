@@ -1,0 +1,8 @@
+[TSCOHYPTS1_MT]
+oc-129-150-71-121.compute.oraclecloud.com
+
+[TESCO_HOSTS:children]
+TSCOHYPTS1_MT
+
+[MT:children]
+TESCO_HOSTS

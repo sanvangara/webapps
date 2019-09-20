@@ -1,0 +1,12 @@
+[AEMXSOATST_MT]
+oc-129-150-111-107.compute.oraclecloud.com
+
+[AEMXSOAPRD_MT]
+oc-129-150-111-161.compute.oraclecloud.com
+
+[AEMX_HOSTS:children]
+AEMXSOATST_MT
+AEMXSOAPRD_MT
+
+[MT:children]
+AEMX_HOSTS

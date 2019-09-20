@@ -1,0 +1,19 @@
+---
+- name: FMW CPU Patching Automation Planning  
+  hosts: 'FMW_HOSTS'
+  vars:
+    cpu_release_id: "{{ cpu_release }}"
+  gather_facts: false 
+
+  tasks:
+
+  - name: CPU Patching Planning
+    shell: ps -eo user,cmd | grep -v 'grep' | grep -E 'Dweblogic|httpd' | awk '{print $1}' | sort -u | head -1
+    register: log_id
+
+  - name: CPU Patching Planning
+    shell:
+          cmd: |
+                pbrun cit-dba -u {{log_id.stdout}} << EOF
+                /usr/local/MAS/fmw/pmp/one_command_pmp_plan.sh -m {{cpu_release}} -p fmw -i wls -s jdbc
+                EOF

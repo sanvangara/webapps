@@ -1,0 +1,15 @@
+---
+- name: FMW CPU Patching Automation Planning  
+  hosts: 'MT'
+  vars:
+    cpu_release_id: "{{ cpu_release }}"
+  gather_facts: true
+
+  tasks:
+
+  - name: CPU Patching Planning
+    shell:
+          cmd: |
+                pbrun cit-dba -u {{log_id}} << EOF
+                /usr/local/MAS/fmw/pmp/one_command_pmp_plan.sh -m {{cpu_release}} -p fmw -i wls -s jdbc
+                EOF

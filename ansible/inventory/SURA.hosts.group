@@ -1,0 +1,8 @@
+[SSURGWIPRD_MT]
+oc-129-144-9-197.compute.oraclecloud.com
+
+[SURA_HOSTS:children]
+SSURGWIPRD_MT
+
+[MT:children]
+SURA_HOSTS

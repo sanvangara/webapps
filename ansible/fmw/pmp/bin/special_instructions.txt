@@ -1,0 +1,30 @@
+###################
+28761794:Start,28700386:Start
+
+Check the post-install steps during analysis and confirm if BUG 28427380 fixing steps will be necessary (if yes, get them fixed with the customer during analysis).
+!!! If you have DIP in the environment => check Doc ID 2470320.1 and include the required workaround for DIP not syncing users post JDK upd.
+
+28761794:End,28700386:End
+###################
+28125308:Start,28355703:Start,28569189:Start,28220491:Start
+
+First startup of the WLS Managed Servers for DIP/ODSM will take considerably longer because it redeploys ODSM.
+!!! If you have DIP in the environment => check Doc ID 2470320.1 and include the required workaround for DIP not syncing users post JDK upd.
+
+28125308:End,28355703:End,28569189:End,28220491:End
+###################
+29192545:Start
+
+Note 1: Always check for the compatible SOA BP in Doc ID 2373729.1
+Note 2: Always backup patch_oim_wls.profile file before any OIM patching during the PPA/analysis period. 
+(once patched the content is defaulted to generic values).
+
+29192545:End
+###################
+29053439:Start
+
+Set globalHMACEnabled to TRUE only if all the WebGates integrated are version 12.2.1.3.180414 and higher.
+
+29053439:End
+###################
+

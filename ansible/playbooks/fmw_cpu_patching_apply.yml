@@ -1,0 +1,14 @@
+---
+- name: FMW CPU Patching Execution
+  hosts: 'FMW_HOSTS'
+  gather_facts: true
+
+  tasks:
+
+  - name: CPU Patching Execution
+    shell:
+          cmd: |
+            pbrun cit-dba -u oracle << EOF
+            /usr/local/MAS/fmw/pmp/one_command_pmp_apply.sh jan2019 auto
+            EOF
+

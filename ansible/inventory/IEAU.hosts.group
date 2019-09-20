@@ -1,0 +1,13 @@
+[IEAUOIDTST_MT]
+oc-129-154-86-239.compute.oraclecloud.com
+
+[IEAUSOATST_MT]
+oc-129-154-68-193.compute.oraclecloud.com
+oc-129-154-68-202.compute.oraclecloud.com
+
+[IEAU_HOSTS:children]
+IEAUOIDTST_MT
+IEAUSOATST_MT
+
+[MT:children]
+IEAU_HOSTS
