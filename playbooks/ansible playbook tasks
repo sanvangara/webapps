@@ -1,0 +1,74 @@
+- hosts: java
+  become: yes
+  tasks:
+
+  - name: Install Packages
+    yum: name={{ item }} update_cache=yes state=latest
+    with_items:
+      - java 
+      
+      [root@ip-172-31-25-250 ~]# java -version
+openjdk version "1.8.0_222"
+Java home: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64/jre
+===========================================================================
+---
+- hosts: maven
+  become: yes
+  tasks:
+
+  - name: Install Packages
+    yum: name={{ item }} update_cache=yes state=latest
+    with_items:
+      - maven
+      
+      
+     [root@ip-172-31-25-250 ~]# mvn -version
+Apache Maven 3.0.5 (Red Hat 3.0.5-17)
+Maven home: /usr/share/maven
+
+
+==============================
+---
+- name: Install Jenkins
+  hosts: jenkins
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Install yum
+      yum:
+        name:
+          - wget
+          - java-1.8.0-openjdk
+
+    - name: Download jenkins.repo
+      get_url:
+        url: http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
+        dest: /etc/yum.repos.d/jenkins.repo
+
+    - name: Import Jenkins Key
+      rpm_key:
+        state: present
+        key: https://jenkins-ci.org/redhat/jenkins-ci.org.key
+
+    - name: Install Jenkins
+      yum:
+        name: jenkins
+        state: present
+
+    - name: Start & Enable Jenkins
+      systemd:
+        name: jenkins
+        state: started
+        enabled: true
+
+    - name: Sleep for 10 seconds and continue with play
+      wait_for: timeout=10
+
+    - name: Get init password Jenkins
+      shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+      changed_when: false
+      register: result
+
+    - name: Print init password Jenkins
+      debug:
+        var: result.stdout

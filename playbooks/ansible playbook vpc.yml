@@ -1,0 +1,89 @@
+ansible playbook create vpc.yml
+
+---
+- hosts: all
+  connection: local
+  tasks:
+   - ec2_vpc_net:
+      name: Appsing
+      state: present
+      cidr_block: 172.23.0.0/16
+      region: ap-southeast-1
+     register: newvpc
+   - ec2_vpc_igw:
+      vpc_id: "{{ newvpc.vpc.id }}"
+      state: present
+      region: ap-southeast-1
+     register: publicroute
+
+   - ec2_vpc_subnet:
+      state: present
+      vpc_id: "{{ newvpc.vpc.id }}"
+      region: ap-southeast-1
+      az: ap-southeast-1a
+      cidr: 172.23.1.0/24
+      resource_tags:
+       Name: "Privatesubnet-1a"
+     register: privatesubneta
+   - ec2_vpc_subnet:
+      state: present
+      vpc_id: "{{ newvpc.vpc.id }}"
+      region: ap-southeast-1
+      az: ap-southeast-1b
+      cidr: 172.23.2.0/24
+      resource_tags:
+       Name: "Privatesubnet-1b"
+     register: privatesubnetb
+   - ec2_vpc_subnet:
+      state: present
+      vpc_id: "{{ newvpc.vpc.id }}"
+      region: ap-southeast-1
+      az: ap-southeast-1a
+      cidr: 172.23.3.0/24
+      resource_tags:
+       Name: "Publicesubnet-1a"
+     register: publicsubneta
+   - ec2_vpc_subnet:
+      state: present
+      vpc_id: "{{ newvpc.vpc.id }}"
+      region: ap-southeast-1
+      az: ap-southeast-1b
+      cidr: 172.23.4.0/24
+      resource_tags:
+       Name: "Publicsubnet-1b"
+     register: publicsubnetb
+   - ec2_vpc_nat_gateway:
+      state: present
+      region: ap-southeast-1
+      wait: yes
+      if_exist_do_not_create: true
+      subnet_id: "{{ publicsubneta.subnet.id }}"
+     register: privatenat
+   - ec2_vpc_route_table:
+      vpc_id: "{{ newvpc.vpc.id }}"
+      region: ap-southeast-1
+      tags:
+       Name: "Public-Routing"
+      subnets:
+       - "{{ publicsubneta.subnet.id }}"
+       - "{{ publicsubnetb.subnet.id }}"
+      routes:
+       - dest: "0.0.0.0/0"
+         gateway_id: "{{ publicroute.gateway_id }}"
+   - ec2_vpc_route_table:
+      vpc_id: "{{ newvpc.vpc.id }}"
+      region: ap-southeast-1
+      tags:
+       Name: "Private-Routing"
+      subnets:
+       - "{{ privatesubneta.subnet.id }}"
+       - "{{ privatesubnetb.subnet.id }}"
+      routes:
+       - dest: "0.0.0.0/0"
+         gateway_id: "{{ privatenat.nat_gateway_id }}"
+   - debug:
+      msg: "{{ privatenat.nat_gateway_id }}"
+   - debug:
+      msg: "{{ publicsubneta.subnet.id }}"
+   - debug:
+      msg: "{{ publicsubnetb.subnet.id }}"

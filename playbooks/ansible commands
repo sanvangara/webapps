@@ -1,0 +1,50 @@
+ansible  ............................
+
+yum -y update
+yum -y install python-pip
+curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+python get-pip.py
+pip install boto3  -------> python package
+pip install awscli
+pip install awscli --upgrade
+pip install boto
+yum install python
+
+
+cp /var/lib/jenkins/workspace/ci-ecs-job/target/NumberGenerator-1.0.1-SNAPSHOT.jar /var/lib/jenkins/workspace/ci-ecs-job/Docker
+cd /var/lib/jenkins/workspace/ci-ecs-job/Docker
+
+export AWS_ACCESS_KEY_ID=AKIAIX5AX5BBXN4IGMSA
+export AWS_SECRET_ACCESS_KEY=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
+export AWS_REGION=us-east-2
+export AWS_ACC_ID=572204997780
+export AWS_ECR_REPO_NAME=ecsrepo
+
+eval $(aws ecr get-login --region us-east-2 | sed 's|https://||')
+docker build -t ecsrepo_app .
+docker tag ecsrepo_app $AWS_ACC_ID.dkr.ecr.us-east-2.amazonaws.com/$AWS_ECR_REPO_NAME:latest
+docker push  $AWS_ACC_ID.dkr.ecr.us-east-2.amazonaws.com/$AWS_ECR_REPO_NAME:latest
+
+
+root@ip-172-31-88-124 centos]# history
+    1  clear
+    2  ansible --version
+    3  rpm -q python
+    4  yum install epel-release -y
+    5  yum install ansible
+    6  ansible --version
+    7  yum -y update
+    8  yum -y install python-pip
+    9  curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+   10  python get-pip.py
+   11  pip install boto3
+   12  pip install awscli
+   13  pip install awscli --upgrade
+   14  pip install boto
+   15  yum install python
+   16  ansible --version
+   17  clear
+   18  history
+   
+   [8:59 am, 07/09/2019] Ramanjaneya Rrddy Software: ipaddress ansible_ssh_user=centos ansible_ssh_private_key_file=/home/centos/Remote_java/inventory/ansible.pem
+[9:00 am, 07/09/2019] Ramanjaneya Rrddy Software: ansible-playbook java.yml -i /home/centos/Remote_java/inventory/hosts.ini -vvv
